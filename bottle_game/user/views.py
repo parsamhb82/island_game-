@@ -25,5 +25,6 @@ class RegisterPlayerView(CreateAPIView):
     def create(self, request, *args, **kwargs):
         serilizer = self.get_serializer(data = request.data)
         if serilizer.is_valid():
+            self.perform_create(serilizer)
             return Response(serilizer.data, status=status.HTTP_201_CREATED)
         return Response(serilizer.errors, status=status.HTTP_400_BAD_REQUEST)
