@@ -1,2 +1,5 @@
 from django.urls import path
-urlpatterns = []
+from .views import CreateBottleView
+urlpatterns = [
+    path("creat-bottle/", CreateBottleView.as_view())
+]
