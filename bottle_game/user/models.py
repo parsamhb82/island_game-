@@ -7,6 +7,9 @@ class Player(models.Model):
     score = models.IntegerField(default=100)
     x = models.BigIntegerField()
     y = models.BigIntegerField()
+    daily_heighest_bottles = models.IntegerField(default=3)
+    read_bottles = models.IntegerField(default=0)
+    reply_bottles = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username
