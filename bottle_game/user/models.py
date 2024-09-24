@@ -10,6 +10,7 @@ class Player(models.Model):
     daily_heighest_bottles = models.IntegerField(default=3)
     read_bottles = models.IntegerField(default=0)
     reply_bottles = models.BooleanField(default=False)
+    total_read_bottles = models.IntegerField(default=0)
 
     def __str__(self):
         return self.user.username

@@ -12,6 +12,10 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         x = random.randint(1, 1000000)
         y = random.randint(1, 1000000)
+        while Player.objects.filter(x=x, y=y).exists():
+            x = random.randint(1, 1000000)
+            y = random.randint(1, 1000000)
+
         
         Player.objects.create(user=user, x = x, y = y)
         return user
@@ -25,3 +29,12 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         if User.objects.filter(username=username).exists():
             raise serializers.ValidationError("Username already exists.")
         return data
+    
+class PlayerScoreSheetSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username')
+
+    class Meta:
+        model = Player
+        fields = ["total_read_bottles",'username']
+
+

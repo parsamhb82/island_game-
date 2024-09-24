@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 class ToBuyBottle(models.Model):
     price = models.IntegerField()
     radius = models.IntegerField()
+    max_lenght = models.IntegerField(default=300)
     def __str__(self) -> str:
         return f"{self.price} - {self.radius}"
 class Bottle(models.Model):

@@ -24,6 +24,8 @@ class SendBottleView(APIView):
             if not bottles.exists():
                 return Response({'message': 'You don\'t have a bottle of this type'}, status=status.HTTP_400_BAD_REQUEST)
             bottle = bottles[0]
+            if bottle.bought_bottle.max_lenght < len(message):
+                return Response({'message': f'message should be less than{bottle.bought_bottle.max_lenght} characters for this specific bottle '}, status=status.HTTP_400_BAD_REQUEST)
             radius = bottle.bought_bottle.radius
             price = bottle.bought_bottle.price
             users = Player.objects.exclude(id=sender.id)
@@ -51,12 +53,13 @@ class ReadSentBottles(APIView):
         if reciever.read_bottles >= reciever.daily_heighest_bottles:
             return Response({'message': 'You have reached your daily limit of reading bottles'}, status=status.HTTP_400_BAD_REQUEST)
         reciever.read_bottles += 1
-        bottles = Bottle.objects.filter(reciever=reciever)
+        bottles = Bottle.objects.filter(reciever=reciever, status=1)
         serilizer = BottleSerilizer(bottles, many=True)
         for bottle in bottles:
             if bottle.status == 1:
                 bottle.status = 2
                 reciever.score += bottle.bought_bottle.price
+                reciever.total_read_bottle += 1
                 bottle.save()
         reciever.save()
         return Response(serilizer.data, status= status.HTTP_200_OK)
@@ -157,6 +160,8 @@ class ReplyToBottle(APIView):
             Bottle.objects.create(sender=sender, reciever=bottle.sender, message=message, status=1, is_sent=True)
             return Response({'message': 'You have successfully replied to the bottle'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
             
     
 
