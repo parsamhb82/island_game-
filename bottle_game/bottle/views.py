@@ -9,6 +9,7 @@ from rest_framework.generics import CreateAPIView, ListAPIView
 import random
 from rest_framework import status
 from django.utils.timezone import now
+from .permissions import IsSuperUser
 
 class SendBottleView(APIView):
     queryset = Bottle.objects.all()
@@ -52,15 +53,14 @@ class ReadSentBottles(APIView):
         reciever = self.request.user.player
         if reciever.read_bottles >= reciever.daily_heighest_bottles:
             return Response({'message': 'You have reached your daily limit of reading bottles'}, status=status.HTTP_400_BAD_REQUEST)
-        reciever.read_bottles += 1
         bottles = Bottle.objects.filter(reciever=reciever, status=1)
-        serilizer = BottleSerilizer(bottles, many=True)
-        for bottle in bottles:
-            if bottle.status == 1:
-                bottle.status = 2
-                reciever.score += bottle.bought_bottle.price
-                reciever.total_read_bottle += 1
-                bottle.save()
+        if not bottles.exists():
+            return Response({'message': 'No bottles found'}, status=status.HTTP_400_BAD_REQUEST)
+        reciever.read_bottles += 1
+        bottle = bottles[0]
+        bottle.status = 2
+        bottle.save()
+        serilizer = BottleSerilizer(bottle)
         reciever.save()
         return Response(serilizer.data, status= status.HTTP_200_OK)
     

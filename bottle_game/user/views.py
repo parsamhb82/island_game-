@@ -10,6 +10,7 @@ from .serilizers import UserRegisterSerializer, PlayerScoreSheetSerializer
 from rest_framework.generics import ListAPIView
 from .models import Player
 from django.db.models import F
+from bottle.permissions import IsSuperUser
 
 
 class Login(TokenObtainPairView):
@@ -40,7 +41,8 @@ class PlayersScoresSheet(ListAPIView):
 
 import uuid
 class FillTheMap(APIView):
-    #permission_classes = [IsAuthenticated]#need to be implemented
+    # this view is for filling the map with users and players should be done only by superuser dont use it in production its only for testing 
+    permission_classes = [IsSuperUser]
     def get(self, request):
         x = 1
         y = 0

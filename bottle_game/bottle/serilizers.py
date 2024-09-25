@@ -10,7 +10,7 @@ class CreateBottleSerilizer(serializers.ModelSerializer):
 class BottleSerilizer(serializers.ModelSerializer):
     class Meta:
         model = Bottle
-        fields = '__all__'
+        fields = ['id', 'message']
 
 class ToBuyBottleSerilizer(serializers.ModelSerializer):
     class Meta:
